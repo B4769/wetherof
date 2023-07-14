@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Weather</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+  integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: rgb(209, 240, 240);
+      
+    }
+
+    h1 {
+      text-align: center;
+      color:black;
+      
+    }
+
+    h3 {
+      text-align: center;
+      color:blue;
+    }
+
+    div {
+      margin-bottom: 20px;
+    }
+
+    input[type="text"] {
+      padding: 5px;
+      font-size: 16px;
+    }
+
+    button {
+      padding: 10px;
+      font-size: 16px;
+    }
+
+    .chart-container {
+      margin-bottom: 20px;
+    }
+
+    #pieChart {
+      width: 100%;
+      height: 200px;
+      border-radius: 50%;
+    }
+
+    @keyframes slide {
+      0% {
+        transform: translateX(0);
+      }
+      20% {
+        transform: translateX(-100%);
+      }
+      80% {
+        transform: translateX(-100%);
+      }
+      100% {
+        transform: translateX(0);
+      }
+    }
+
+    #slideshow {
+      display: inline-block;
+      animation: slide 10s infinite;
+    }
+
+    #curve{
+        
+    margin-right: 10px;
+   padding-left: 10px;
+    box-shadow:#555;
+    height: 300px;
+}
+#shadow{
+    
+    margin-left: 50px;
+    height:300px;
+
+    padding-right:  50px;
+  }
+  #shadow1{
+    margin-right: 10px;
+    height:400px;
+    padding-left: 50px;
+  }
+ 
+
+
+  #shadow2{
+    margin-left: 50px;
+    height:400px;
+    padding-left: 10px;
+
+
+  }
+
+  #shadow3{
+
+    margin-right: 10px;
+    height: 450px;
+ }
+ #shadow4{
+    margin-left: 50px;
+    height: 450px;
+    
+}
+.fluid-container{
+background-color: lightblue; 
+} 
+
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+      <a class="navbar-brand" href="#">
+        <h1><span id="slideshow">WEATHER INFORMATION OF THE ALL COUNTRY</span></h1>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    </div>
+  </nav>
+  <h3>Search by Country name</h3>
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-6 offset-md-3">
+        <div class="input-group mb-3">
+          <input type="text" id="countryInput" class="form-control" placeholder="Enter country name">
+          <button onclick="searchWeather()" class="btn btn-primary">Search</button>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-12"   style="color: blueviolet;">
+            <div class="shadow p-3 mb-5 bg-body-tertiary rounded" id="curve">
+        <div id="weatherData"></div>
+            </div>
+      
+        </div>
+    <div class="col-lg-6 col-md-6 col-sm-12">
+      <div class="shadow p-3 mb-5 bg-body-tertiary rounded" id="shadow">
+    
+        <canvas id="lineChart"></canvas>
+      </div>
+    </div>
+    </div>
+    
+    
+    <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-12">
+            <div class="shadow p-3 mb-5 bg-body-tertiary rounded" id="shadow1">
+                <div id="container1">
+        <canvas id="barChart"></canvas>
+                </div>
+      </div>
+        </div>
+    
+        <div class="col-lg-6 col-md-6 col-sm-12">
+            <div class="shadow p-3 mb-5 bg-body-tertiary rounded" id="shadow2">
+        <canvas id="pieChart"></canvas>
+      </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-12">
+        <div class="shadow p-3 mb-5 bg-body-tertiary rounded" id="shadow3"> 
+        <canvas id="radarChart"></canvas>
+      </div>
+        </div>
+    
+        <div class="col-lg-6 col-md-6 col-sm-12">
+        <div class="shadow p-3 mb-5 bg-body-tertiary rounded" id="shadow4"> 
+        <div id="heatMap"></div>
+        </div>
+      </div>
+    </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+
+
+     <script>
+    
+var slideshowText = ["Wather information of the all country","You can search it any information you need"];
+
+
+function updateSlideshow() {
+  var slideshow = document.getElementById("slideshow");
+  var currentIndex = 0;
+
+  setInterval(function() {
+    slideshow.textContent = slideshowText[currentIndex];
+    currentIndex = (currentIndex + 1) % slideshowText.length;
+  }, 5000);
+}
+
+
+updateSlideshow();
+    
+    function searchWeather() {
+      var country = document.getElementById("countryInput").value;
+      var apiKey = "f33171a29dd2c60ca7f935b26924e9cc"; 
+
+      
+      fetch(`https://api.openweathermap.org/data/2.5/weather?q=${country}&appid=${apiKey}`)
+        .then(response => response.json())
+        .then(data => {
+          
+          var weatherData = document.getElementById("weatherData");
+          weatherData.innerHTML = `
+            <h2>${data.name}</h2>
+            <p>Temperature: ${data.main.temp} K</p>
+            <p>Humidity: ${data.main.humidity}%</p>
+            <p>Wind Speed: ${data.wind.speed} m/s</p>
+          `;
+
+    
+          var lineCtx = document.getElementById("lineChart").getContext("2d");
+          var lineChart = new Chart(lineCtx, {
+            type: "line",
+            data: {
+              labels: ["Temperature"],
+              datasets: [{
+                label: "Weather Data",
+                data: [data.main.temp],
+                backgroundColor: "brown",
+                borderColor: "white",
+borderWidth: 1 }] }, options: { scales: { yAxes: [{ ticks: { beginAtZero: true } }] } } });
+
+      
+      var barCtx = document.getElementById("barChart").getContext("2d");
+      var barChart = new Chart(barCtx, {
+        type: "bar",
+        data: {
+          labels: ["Humidity"],
+          datasets: [{
+            label: "Weather Data",
+            data: [data.main.humidity],
+            backgroundColor: "bluelight",
+            borderColor: "red",
+            borderWidth: 0.5
+          }]
+        },
+        options: {
+          scales: {
+            yAxes: [{
+              ticks: {
+                beginAtZero: true
+              }
+            }]
+          }
+        }
+      });
+
+    
+      var pieCtx = document.getElementById("pieChart").getContext("2d");
+      var pieChart = new Chart(pieCtx, {
+        type: "pie",
+        data: {
+          labels: ["Wind Speed"],
+          datasets: [{
+            label: "Weather Data",
+            data: [data.wind.speed],
+            backgroundColor: ["pink"],
+            borderColor: ["black"],
+            borderWidth: 0.5
+          }]
+        }
+      });
+
+    
+      var radarCtx = document.getElementById("radarChart").getContext("2d");
+      var radarChart = new Chart(radarCtx, {
+        type: "radar",
+        data: {
+          labels: ["Temperature", "Humidity", "Wind Speed"],
+          datasets: [{
+            label: "Weather Data",
+            data: [data.main.temp, data.main.humidity, data.wind.speed],
+            backgroundColor: "blue",
+            borderColor: "black",
+            borderWidth: 1
+          }]
+        },
+        options: {
+          scale: {
+            ticks: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+
+      
+      var heatMapData = [
+        {
+          z: [[data.main.temp]],
+          type: 'heatmap',
+          colorscale: 'Viridis'
+        }
+      ];
+
+      var heatMapLayout = {
+        title: 'Current Weather Information',
+        xaxis: {
+          title: 'Temperature'
+        },
+        yaxis: {
+          title: 'Country'
+        }
+      };
+
+      Plotly.newPlot('heatMap', heatMapData, heatMapLayout);
+    });
+}
+</script>
+</body>
+</html>
